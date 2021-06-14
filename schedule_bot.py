@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import os
 import pickle
@@ -51,7 +51,7 @@ class schedule_bot() :
 
 		dp.add_handler(CommandHandler("help", self.help))
 
-
+		print(datetime.now())
 		print("starting polling")
 		updater.start_polling()
 
@@ -206,7 +206,10 @@ class schedule_bot() :
 				minutes=int(60*(hours%1)) #yes this is kinda clunky
 				hours=int(hours)
 
-				m+="There is {}:{} until you go to sleep\n".format(str(hours).zfill(2),str(minutes).zfill(2))
+
+				sleep_time=datetime.now() + timedelta(minutes = minutes, hours=hours)
+
+				m+="There is {}:{} until you go to sleep at {}\n".format(str(hours).zfill(2),str(minutes).zfill(2),sleep_time.strftime('%I:%M'))
 
 
 			#sleep time
@@ -229,8 +232,8 @@ class schedule_bot() :
 			arrival_text=received_text.split(" ", 1)[1] #this should remove the command
 			self.add_arrival(id, arrival_text)
 			self.send_message(id, self.get_status_message(id))
-		except:
-			self.send_message(id,"Something went wrong, please try again")
+		except Exception as e:
+			self.send_message(id,"Something went wrong, please try again:\n{}".format(e))
 
 	#Sets a new sleep time
 	def set_sleep_time(self,update, context):
@@ -240,8 +243,8 @@ class schedule_bot() :
 			sleep_text=received_text.split(" ", 1)[1] #this should remove the command
 			self.add_sleep_time(id, sleep_text)
 			self.send_message(id, self.get_status_message(id))
-		except:
-			self.send_message(id,"Something went wrong, please try again")
+		except Exception as e:
+			self.send_message(id,"Something went wrong, please try again:\n{}".format(e))
 
 	#Sends info
 	def send_info(self,update, context):
@@ -284,7 +287,7 @@ class schedule_bot() :
 
 
 def main():
-	TOKEN="1744090845:AAE22dX9YGxod3zJOV7MG_msNXgS9FP835s"
+	TOKEN=""
 	# ID="-354289193"
 	ts=schedule_bot(TOKEN)
 	print("started telegram bot")
